@@ -1,6 +1,6 @@
-# Soil Moisture Prediction with Modality-Aware Transformer
+# On-demand AI-driven Surface Soil Moisture at 10 m (OASSM-10)
 
-A deep-learning pipeline for **surface soil moisture (SSM) estimation** at 10 m resolution, powered by a modality-aware Transformer that fuses multi-source remote sensing data through cross-attention. The project includes model training, SHAP-based feature importance analysis, batch inference, and an interactive web tool for on-demand prediction.
+A deep-learning pipeline for **surface soil moisture (SSM) estimation** at 10 m resolution, powered by a modality-aware Transformer that fuses multi-source remote sensing data through cross-attention. The project includes model training, batch inference, and an interactive web tool for on-demand prediction.
 
 ---
 
@@ -164,8 +164,9 @@ The interactive web tool provides a point-and-click interface for on-demand soil
 
    ![Run Prediction](./images/webtool1.png)
 
-4. **View results** — The predicted soil moisture appears as a new layer on the map. Click **"Download GeoTIFF"** to export the raster to your computer.
+4. **Run time series prediction** — Click **"Run Time Series Prediction"** to perform long-term time series analysis for the selected coordinate point, allowing you to examine temporal variations in predicted soil moisture over an extended period.
 
+   ![Time Series Prediction](./images/webtool2.png)
 ---
 
 ## Key Dependencies
