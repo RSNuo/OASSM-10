@@ -14,7 +14,7 @@ This project predicts volumetric soil moisture (m³/m³) by combining:
 - **Topographic features** derived from the Copernicus DEM (elevation, slope, TWI, aspect)
 - **Ancillary context** including climate zone (Beck–Köppen–Geiger), USDA soil texture, and ESA WorldCover land-cover class
 
-The core model is an **Enhanced Soil Transformer (V4)** with the following design:
+The core model is a modality-aware Transformer with the following design:
 
 | Component | Description |
 |---|---|
@@ -33,20 +33,20 @@ Ground-truth labels come from the **International Soil Moisture Network (ISMN)**
 ```
 .
 ├── training.ipynb                 # Model training (5-fold CV)
-├── transformer_prediction.ipynb   # Batch inference pipeline (GEE → GeoTIFF)
-├── feature_importance.py          # Standalone SHAP analysis (uses trained checkpoints)
+├── prediction.ipynb   # Batch inference pipeline (GEE → GeoTIFF)
 ├── requirements.txt               # Python dependencies
 ├── data/
-│   ├── train_set1.zip             # Training data (ISMN-matched pixels)
-│   ├── test_set1.zip              # Hold-out test data
+│   ├── train_set.zip             # Training data (ISMN-matched pixels)
+│   ├── test_se1.zip              # Hold-out test data
 │   ├── label_encoders.pkl         # Fitted LabelEncoders for categorical features
 │   └── cat_dims.pkl               # Category cardinalities
 ├── model/
-│   ├── transformer_v4_fold_{1..5}.pth   # Model checkpoints (state dict + metadata)
-│   └── transformer_v4_fold_{1..5}.pkl   # Fold-specific preprocessors (scalers)
+│   ├── transformer_fold_{1..5}.pth   # Model checkpoints (state dict + metadata)
+│   └── transformer_fold_{1..5}.pkl   # Fold-specific preprocessors (scalers)
 ├── images/
 │   ├── webtool.png
-│   └── webtool1.png
+│   ├── webtool1.png
+│   └── webtool2.png
 └── figures/                       # Output directory for SHAP plots
 ```
 
