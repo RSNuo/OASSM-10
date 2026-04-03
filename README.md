@@ -140,16 +140,15 @@ Follow the browser-based sign-in flow and paste the authorization token when pro
 
 The notebook proceeds through the following steps:
 
+
 | Cell | Stage | Description |
 |---|---|---|
-| 0 | **GEE data acquisition** | Queries Sentinel-1 (same-day), Sentinel-2, Landsat 8/9 (closest within ±14 days), Copernicus DEM, ESA WorldCover, and USDA soil texture for the target ROI and date. Composites all bands into a single multi-band image and exports as GeoTIFF. |
-| 1 | **GeoTIFF → DataFrame** | Reads the exported `.tif` with `rasterio`, reshapes the pixel grid into a tabular DataFrame with longitude/latitude coordinates. |
-| 2–3 | **Feature engineering** | Computes temporal lag features (`s2_lag`, `landsat_lag`), day-of-year cyclical encodings (`Day_sin`, `Day_cos`), spectral indices (`NDVI_Best`, `NDMI_Best`), and applies best-source selection logic. |
-| 4 | **Climate zone lookup** | Samples the Beck–Köppen–Geiger classification raster at each pixel location using `rasterio` with on-the-fly resampling to 10 m. |
-| 5 | **Save processed data** | Exports the inference-ready DataFrame as `.pkl`. |
-| 6 | **Standardization** | Loads the training-time standardizer (`standardizer.joblib`) and applies the same transformations to ensure feature distributions match training. |
-| 7 | **Transformer ensemble inference** | Loads all 5 fold checkpoints, applies fold-specific preprocessing, runs batched forward passes, and averages predictions across folds. |
-| 8 | **Export to GeoTIFF** | Pivots predictions back to a regular lat/lon grid and writes a georeferenced GeoTIFF (EPSG:4326) with `rasterio`. |
+| 1 | **Configuration** | Sets target date, ROI center, file paths, model hyperparameters, and feature column definitions. Initializes GEE and PyTorch device. |
+| 2 | **GEE data export** | Queries Sentinel-1 (same-day), Sentinel-2, Landsat 8/9 (closest within ±14 days with pixel-level cloud masking), Copernicus/ALOS DEM terrain, ESA WorldCover, and USDA soil texture for the target ROI. Composites all bands into a single multi-band image and exports as GeoTIFF to Google Drive. |
+| 3 | **GeoTIFF → DataFrame & feature engineering** | Reads the exported `.tif` with `rasterio`, reshapes the pixel grid into a tabular DataFrame with longitude/latitude coordinates. Computes temporal lag features (`s2_lag`, `landsat_lag`), day-of-year cyclical encodings (`Day_sin`, `Day_cos`), spectral indices (`NDVI_Best`, `NDMI_Best`) with best-source selection logic, and samples the Beck–Köppen–Geiger climate classification raster at each pixel location. |
+| 4 | **Standardization** | Loads the training-time standardizer (`standardizer.joblib`) and applies the same transformations to ensure feature distributions match training. |
+| 5 | **Model definition & inference** | Defines the Transformer V4 architecture (must match training exactly). Loads all 5 fold checkpoints with fold-specific preprocessors, runs batched forward passes on GPU/CPU, and averages predictions across folds. |
+| 6 | **Export to GeoTIFF** | Pivots predictions back to a regular lat/lon grid and writes a georeferenced single-band GeoTIFF (EPSG:4326) with `rasterio`. |
 
 ### 4. Web Tool
 
